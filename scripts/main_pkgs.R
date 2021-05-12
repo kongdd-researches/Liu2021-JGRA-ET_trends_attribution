@@ -1,0 +1,8 @@
+# setwd('F:/Research/16. Human E/Results/')
+library(reshape2)
+library(ggplot2)
+library(abind)
+library(rcolors)
+library(ggthemes)
+library(plyr)
+library(latticeMap)
