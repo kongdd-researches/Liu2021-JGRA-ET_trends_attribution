@@ -11,3 +11,9 @@
 # data
 *.rda
 *.RData
+*.xlsx
+*.tif
+
+*/temp
+INPUTS
+*.code-workspace

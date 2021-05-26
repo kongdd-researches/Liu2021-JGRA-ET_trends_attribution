@@ -2,4 +2,11 @@
 
 export(sign_agree)
 import(Ipaper)
+import(ncdf4)
 import(rtrend)
+importFrom(nctools,nc_date)
+importFrom(nctools,ncdim_def_lonlat)
+importFrom(nctools,ncread)
+importFrom(raster,aggregate)
+importFrom(raster,as.array)
+importFrom(raster,writeRaster)

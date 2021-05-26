@@ -1,36 +1,34 @@
 # !/usr/bin/Rscript
 # Dongdong Kong ----------------------------------------------------------------
 source("scripts/main_pkgs.R")
-library(foreach)
+
+{
+  library(sf)
+  sp_cont <- list("sp.lines", get_continent(), lwd = 0.2, first = F)
+  sp_layout = list(sp_cont)
+  # sp_sign = list("sp.polygons", poly_shade, first = FALSE, lwd = 0.1)
+  # sp_sign,
+}
 
 # ------------------------------------------------------------------------- 3. Figure
 # load(file = 'Multimodel median E Trends from CIMP6 and GLEAM.RData')
 load(file = "data-raw/Multimodel mean E Trends from CIMP6 and GLEAM.RData")
-{
-  Data <- Trends_ALL
-  Data <- llply(1:5, function(j) {
-    cbind(Data$E[, j], Data$Ev[, j], Data$Et[, j])
-  })
-  Data <- abind(Data, along = 2) %>% as.data.frame()
-  attr(Data, "dimnames") <- NULL
-  Names <- paste(paste0("(", letters[1:15], ")"), rep(names(Trends_ALL$E), each = 3), rep(c("E", "Et", "Ev"), 5))
-  # Data <- data.frame(Data)
-  names(Data) <- Names
-  L <- 2
-  Data[Data > L] <- L
-  Data[Data < -L] <- -L
-}
+# {
+#   Data <- Trends_ALL
+#   Data <- llply(1:5, function(j) {
+#     cbind(Data$E[, j], Data$Ev[, j], Data$Et[, j])
+#   })
+#   Data <- abind(Data, along = 2) %>% as.data.frame()
+#   attr(Data, "dimnames") <- NULL
+#   Names <- paste(paste0("(", letters[1:15], ")"), rep(names(Trends_ALL$E), each = 3), rep(c("E", "Et", "Ev"), 5))
+#   # Data <- data.frame(Data)
+#   names(Data) <- Names
+#   L <- 2
+#   Data[Data > L] <- L
+#   Data[Data < -L] <- -L
+# }
 
-{
-    library(sf)
-    shp_cont <- read_sf("I:/Research/phenology/phenologyTP/data-raw/shp/continent.shp") %>%
-        as_Spatial()
-    sp_cont <- list("sp.lines", shp_cont, lwd = 0.2, first = F)
-    # sp_sign = list("sp.polygons", poly_shade, first = FALSE, lwd = 0.1)
-    # sp_sign,
-    sp_layout = list(sp_cont)
-}
-
+library(latticeMap)
 # prepare plot data
 {
   set_options(list(style = "EN"))
@@ -45,6 +43,14 @@ load(file = "data-raw/Multimodel mean E Trends from CIMP6 and GLEAM.RData")
     melt(c("band", "I"), variable.name = "forcing") %>%
     data.table()
 }
+
+# library(rgdal)
+# foreach(d = Trends_ALL, name = names(Trends_ALL)) %do% {
+#   grid@data <- d
+#   outfile = glue::glue("trend_GCMs-{name}.tif")
+#   writeGDAL(grid, outfile)
+# }
+# extract2("trend_GCMs-E.tif", )
 
 # Tables
 {
@@ -80,13 +86,14 @@ load(file = "data-raw/Multimodel mean E Trends from CIMP6 and GLEAM.RData")
   pars <- list(title = list(x = -170, y = 92, cex = 1.4, adj = c(0, 1)))
 }
 
-for(bandName in bands[1:3]) {
+bands = c("E", "Et", "Ev") %>% set_names(., .)
+for(bandName in bands[1:1]) {
   # load_all("I:/Research/phenology/latticeGrob.R")
   p <- sp_plot(grid,
     # df2,
     df2[band == bandName],
-    layout = c(2, 3),
     formula = value ~ lon + lat | forcing, # band +
+    layout = c(2, 3),
     aspect = 0.45,
     pars = pars, unit = "mm/y",
     ylim = c(-65, 100), xlim = c(-180, 250),
