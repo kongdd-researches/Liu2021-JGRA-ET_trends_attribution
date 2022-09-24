@@ -3,6 +3,7 @@
 source("scripts/main_pkgs.R")
 
 {
+  library(lattice.layers)
   library(sf)
   library(sf2)
   sp_cont <- list("sp.lines", get_continent(), lwd = 0.2, first = F)
@@ -23,7 +24,6 @@ AI = raster("INPUTS/AridityIndex_MSWEP-prcp_div_GLEAM-Ep_1980-2020.tif") %>%
 # AI <- readGDAL("INPUTS/AridityIndex_MSWEP-prcp_div_GLEAM-Ep_1980-2020.tif")
 # AI$E = Trends_ALL$E[, 1]
 
-library(lattice.layers)
 # prepare plot data
 {
   set_options(list(style = "EN"))
@@ -39,7 +39,6 @@ library(lattice.layers)
     data.table()
   df2$forcing %<>% recode(Obs = "OBS")
 }
-
 
 {
   brks = c(-Inf, 0.05, 0.2, 0.5, 0.65, Inf)
@@ -60,7 +59,6 @@ info[, perc := round(N/sum(N)*100, 1), .(band, forcing)] %>%
 
 ggplot(info, aes(AI2, N, fill = as.factor(sign))) +
   geom_histogram(stat = "identity")
-
 
 {
   theme_set(
