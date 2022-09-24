@@ -5,7 +5,7 @@ library(abind)
 library(rcolors)
 library(ggthemes)
 library(dplyr)
-library(latticeMap)
+library(lattice.layers)
 library(foreach)
 
 library(ECOF)

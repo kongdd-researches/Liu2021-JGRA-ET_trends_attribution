@@ -3,7 +3,7 @@
 source("scripts/main_pkgs.R")
 load_all()
 {
-  library(latticeMap)
+  library(lattice.layers)
   library(sf)
   library(sf2)
   sp_cont <- list("sp.lines", get_continent(), lwd = 0.2, first = F)
@@ -73,42 +73,59 @@ AI = raster("INPUTS/AridityIndex_MSWEP-prcp_div_GLEAM-Ep_1980-2020.tif") %>%
 ## 2.2 visualization ------------------------------------------------------------
 # df2$band %<>% mapvalues(c("E", "Et", "Ev"))
 {
-  # load_all("I:/Research/phenology/latticeMap.R")
+  devtools::load_all("I:/GitHub/rpkgs/lattice.layers.R")
   pars <- list(title = list(x = -170, y = 100, cex = 1.4, adj = c(0, 1)))
   p <- sp_plot(grid,
-               df2,
+               df2[band == "E"],
                # df2[band == "E" & forcing == "OBS"],
                # layout = c(2, 3),
-               formula = value ~ lon + lat |  band + forcing,
+               formula = value ~ lon + lat |  forcing,
                aspect = 0.45,
                pars = pars, unit = "mm/y",
-               ylim = c(-60, 90), xlim = c(-180, 240),
+               ylim = c(-60, 92), xlim = c(-180, 240),
                sp.layout = sp_layout,
                par.strip.text = list(cex = 1.5, font = 2, fontfamily = "TimesSimSun", lineheight = 2),
-               par.settings2 = list(axis.line = list(col = "black")),
+               # par.settings2 = list(axis.line = list(col = "black")),
                key.num2factor = TRUE,
                colorkey = list(space = "right", height = 0.985),
                brks = brks, colors = cols
   ) +
+    layer_statistic(x = 0.4, y = 0.1, cex = 1.4, fill = "white") +
+    layer_barchart(x = 0.08, y = 0.05, height = 0.24, width = 0.18, title = FALSE, xlabels = FALSE) +
+    layer_latFreq(bbox =c(190, 240, -60, 92), unit = "native",
+                  is_spatial = TRUE,
+                  ylabels = FALSE,
+                  col.regions = c("red", "blue"),
+                  zlim = c(-1, 1),
+                  cex = 1.2,
+                  ylim = c(-60, 90)) +
+    layer_title(x = 0.01, y = 0.995, labels = NULL) +
+    layer_signPerc(x = 0.01, y = 0.58) +
     theme_lattice(
       key.margin = c(0, 1.5, 0, 0),
       plot.margin = c(0, 5.5, 0.5, 1)
     )
   outfile = glue::glue("Figure1_all_spatial trends of signals.pdf")
-  p2 <- latticeExtra::useOuterStrips(p,
-    strip = strip.custom(factor.levels = c(expression(bold(ET)), expression(bold(T)), expression(bold(ET - T))))) +
-    layer_statistic(x = 0.4, y = 0.1, cex = 1.4) +
-    layer_barchart(x = 0.08, y = 0.05, height = 0.24, width = 0.18, title = FALSE, xlabels = FALSE) +
-    layer_latFreq(bbox =c(185, 240, -60, 90), unit = "native",
-                  is_spatial = TRUE, ylabels = FALSE,
-                  col.regions = c("red", "blue"),
-                  zlim = c(-1, 1),
-                  cex = 1.2,
-                  ylim = c(-60, 90)) +
-    layer_title(x = 0.01, y = 0.99, labels = rep("", 15) %>% label_tag()) +
-    layer_signPerc(x = 0.01, y = 0.58)
-  write_fig(p2, outfile, 14, 10)
-  write_fig(p2, outfile, 14, 10, devices = "jpg")
+  write_fig(p, outfile, 12, 8, devices = "pdf")
+  # write_fig(p2, outfile, 14, 10, devices = "jpg")
+}
+
+
+{
+    write_fig({
+        # grid.newpage()
+        x <- stats::runif(20)
+        y <- stats::runif(20)
+        rot <- stats::runif(20, 0, 360)
+        grid.rect(gp = gpar(fill = "red"))
+        grid.text("SOMETHING NICE AND BIG", x=x, y=y, rot=rot,
+                  gp=gpar(fontsize=20, col="grey"))
+
+        # title <- grobTree( rectGrob(gp=gpar(fill="black")),
+        #                    textGrob("Testing title background",
+        #                             gp=gpar(fontsize=15, col="white", fontface="bold")))
+        # grid.draw(title)
+    })
 }
 
 # bands = c("E", "Et", "Ev") %>% set_names(., .)

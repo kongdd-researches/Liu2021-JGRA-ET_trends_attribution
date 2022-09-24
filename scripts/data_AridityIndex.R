@@ -48,7 +48,7 @@ prcp <- ncread(file_prcp)$data[[1]]
 
 AI = prcp/pet
 res = apply(AI, c(1, 2), slope_p)
-res = plyr::aaply(AI, c(1, 2), slope_mk(x), .progress = "text")
+res = plyr::aaply(AI, c(1, 2), slope_mk, .progress = "text")
 ai = apply_3d(AI) %>% spdata_array
 # ncread(file_prcp, "lat")
 r_ai <- as_raster(ai)
@@ -62,19 +62,33 @@ library(sf)
 sp_cont <- list("sp.lines", get_continent(), lwd = 0.5, first = F)
 sp_layout = list(sp_cont)
 
+brks = c(-Inf, 0.2, 0.5, 0.65, Inf)
+levs = c("arid", "semi-arid", "sub-humid", "humid")
+
 g <- readGDAL("INPUTS/AridityIndex_MSWEP-prcp_div_GLEAM-Ep_1980-2020.tif")
-g$band1 %<>% clamp(c(0, 10), TRUE)
+g$band1 %<>% clamp(c(0, 10), TRUE) %>%
+    cut(brks)
+
+# {
+#     colorkey.param$at <- seq_len(length(colorkey.param$labels$labels) + 1) - 0.5
+#     draw.colorkey(colorkey.param) %>% write_fig("a.pdf")
+# }
+# trace(sp:::spplot.grid, edit =T)
+
 {
     # load_all("I:/Research/phenology/latticeMap.R")
-    brks = c(-Inf, 0, 0.05, 0.2, 0.5, 0.65, 1:5, 20, Inf)
+    # brks = c(-Inf, 0, 0.05, 0.2, 0.5, 0.65, Inf)
     # brks2 = c(0.05, 0.2, 0.5, 0.65, 1, 2, 5)
-    brks2 = c(0.05, 0.2, 0.65, 1)
+    # brks2 = c(0.05, 0.2, 0.65, 1)
+    #
     # sub- humid (0.65 > AI ≥ 0.5), semi- arid (0.5 > AI ≥ 0.2),
     # arid (0.2 > AI ≥ 0.05) and hyper- arid (AI < 0.05) regions
     nbrk = length(brks) - 1
     n_more = 2
     cols <- get_color(rcolors$amwg256, nbrk+n_more) %>% .[-(1:n_more)] %>% rev()
-    p <- sp_plot(g, brks = brks, colors = cols,
+    p <- sp_plot(g,
+                 # brks = brks,
+                 colors = cols,
                  xlim = c(-180, 240),
                  ylim = c(-60, 90),
                  aspect = 0.5,
@@ -86,7 +100,7 @@ g$band1 %<>% clamp(c(0, 10), TRUE)
         layer_barchart(x = 0.01, y = 0.05, width = 0.22) +
         layer_contourf(brks = brks2)
         # layer_statistic(x = 0.4, y = 0.1, cex = 1.4)
-    write_fig(p, "Figure_S01_AridityIndex_SpatialDistribution.pdf")
+    write_fig(p, "Figure_S01_AridityIndex_SpatialDistribution2.pdf")
 }
 
 # {

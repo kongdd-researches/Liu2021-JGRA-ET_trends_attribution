@@ -1,5 +1,6 @@
 trans_array <- function(x) x %>% aperm(c(2, 1, 3))
 
+#' @importFrom raster aggregate raster brick
 raster2array <- function(r) {
     as.array(r) %>%
         trans_array() %>%
