@@ -56,7 +56,7 @@ writeRaster(r_ai, "INPUTS/AridityIndex_MSWEP-prcp_div_GLEAM-Ep_1980-2020.tif")
 
 # show aridity spatial distribution
 library(rgdal)
-library(latticeMap)
+library(lattice.layers)
 library(rcolors)
 library(sf)
 sp_cont <- list("sp.lines", get_continent(), lwd = 0.5, first = F)
@@ -76,7 +76,7 @@ g$band1 %<>% clamp(c(0, 10), TRUE) %>%
 # trace(sp:::spplot.grid, edit =T)
 
 {
-    # load_all("I:/Research/phenology/latticeMap.R")
+    # load_all("I:/Research/phenology/lattice.layers.R")
     # brks = c(-Inf, 0, 0.05, 0.2, 0.5, 0.65, Inf)
     # brks2 = c(0.05, 0.2, 0.5, 0.65, 1, 2, 5)
     # brks2 = c(0.05, 0.2, 0.65, 1)

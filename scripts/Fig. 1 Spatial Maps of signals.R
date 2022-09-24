@@ -3,7 +3,7 @@
 source("scripts/main_pkgs.R")
 load_all()
 {
-  library(latticeMap)
+  library(lattice.layers)
   library(sf)
   library(sf2)
   sp_cont <- list("sp.lines", get_continent(), lwd = 0.2, first = F)
@@ -73,7 +73,7 @@ AI = raster("INPUTS/AridityIndex_MSWEP-prcp_div_GLEAM-Ep_1980-2020.tif") %>%
 ## 2.2 visualization ------------------------------------------------------------
 # df2$band %<>% mapvalues(c("E", "Et", "Ev"))
 {
-  # load_all("I:/Research/phenology/latticeMap.R")
+  # load_all("I:/Research/phenology/lattice.layers.R")
   pars <- list(title = list(x = -170, y = 100, cex = 1.4, adj = c(0, 1)))
   p <- sp_plot(grid,
                df2,
@@ -113,7 +113,7 @@ AI = raster("INPUTS/AridityIndex_MSWEP-prcp_div_GLEAM-Ep_1980-2020.tif") %>%
 
 # bands = c("E", "Et", "Ev") %>% set_names(., .)
 # for(bandName in bands[1:1]) {
-#   load_all("I:/Research/phenology/latticeMap.R")
+#   load_all("I:/Research/phenology/lattice.layers.R")
 #   p <- sp_plot(grid,
 #     # df2,
 #     df2[band == bandName],

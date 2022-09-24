@@ -130,7 +130,7 @@ AI = raster("INPUTS/AridityIndex_MSWEP-prcp_div_GLEAM-Ep_1980-2020.tif") %>%
 
 # bands = c("E", "Et", "Ev") %>% set_names(., .)
 # for(bandName in bands[1:1]) {
-#   load_all("I:/Research/phenology/latticeMap.R")
+#   load_all("I:/Research/phenology/lattice.layers.R")
 #   p <- sp_plot(grid,
 #     # df2,
 #     df2[band == bandName],

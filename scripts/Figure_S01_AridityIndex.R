@@ -23,7 +23,7 @@ AI = raster("INPUTS/AridityIndex_MSWEP-prcp_div_GLEAM-Ep_1980-2020.tif") %>%
 # AI <- readGDAL("INPUTS/AridityIndex_MSWEP-prcp_div_GLEAM-Ep_1980-2020.tif")
 # AI$E = Trends_ALL$E[, 1]
 
-library(latticeMap)
+library(lattice.layers)
 # prepare plot data
 {
   set_options(list(style = "EN"))
