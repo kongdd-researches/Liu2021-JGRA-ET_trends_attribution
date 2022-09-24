@@ -6,11 +6,11 @@
 
 **Figure1:** ET_trends
 
-![image-20220924145502031](F:\CUG-Hydro\p2021.globalETtrend\images\README\Figure1_ET_trends.png)
+![](images/README/Figure1_ET_trends.png)
 
 **Figure S1:** Aridity Index
 
-![image-20220924145651827](F:\CUG-Hydro\p2021.globalETtrend\images\README\Figure_S1_AridityIndex.png)
+![](images/README/Figure_S1_AridityIndex.png)
 
 # References
 
