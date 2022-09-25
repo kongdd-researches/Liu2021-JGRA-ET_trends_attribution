@@ -5,6 +5,11 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
+# Referencen
+
+1. Lian, X., Piao, S., Chen, A., Huntingford, C., Fu, B., Li, L. Z. X., et al. (2021). Multifaceted characteristics of dryland aridity changes in a warming world. Nature Reviews Earth & Environment, 2(4), 232–250. <https://doi.org/10.1038/s43017-021-00144-0>
+
+
 ```{r}
 source("scripts/main_pkgs.R")
 library(sf)
@@ -32,37 +37,61 @@ library(sf)
 sp_cont <- list("sp.lines", get_continent(), lwd = 0.5, first = F)
 sp_layout <- list(sp_cont)
 
-brks <- c(-Inf, 0.2, 0.5, 0.65, Inf)
-levs <- c("arid", "semi-arid", "sub-humid", "humid")
-
 g <- readGDAL("INPUTS/AridityIndex_MSWEP-prcp_div_GLEAM-Ep_1980-2020.tif")
-g$band1 %<>% clamp(c(0, 10), TRUE) #%>% cut(brks)
+g$band1 %<>% clamp(c(0, 10), TRUE) # %>% cut(brks)
 ```
+
+## Dryland的划分标准
+
+"Drylands are traditionally defined by the United Nations Environment Programme 
+as areas with AI ≤ 0.65, and can be further subcategorized into dry sub-humid 
+(0.65 > AI ≥ 0.5), semi-arid (0.5 > AI ≥ 0.2), arid (0.2 > AI ≥ 0.05) and 
+hyper-arid (AI < 0.05) regions." (**Lian 2021, Box1**)
+
+$$AI = Prcp / PET$$
+
+Dryland: AI <= 0.65
+
+| Category     |  Definition |
+| ---- | ---- |
+|dry sub-humid | 0.65 > AI ≥ 0.5 |
+|semi-arid     | 0.5 > AI ≥ 0.2  |
+|arid          | 0.2 > AI ≥ 0.05 |
+|hyper-arid    | AI < 0.05       |
 
 出图：
 ```{r}
 # brks = c(-Inf, 0, 0.05, 0.2, 0.5, 0.65, Inf)
 # brks2 = c(0.05, 0.2, 0.5, 0.65, 1, 2, 5)
-brks2 = c(0.05, 0.2, 0.65, 1)
-brks <- c(-Inf, 0, 0.05, 0.2, 0.5, 0.65, 1:5, 20, Inf)
+brks <- c(-Inf, 0.2, 0.5, 0.65, Inf)
+levs <- c("arid", "semi-arid", "sub-humid", "humid")
 
-nbrk = length(brks) - 1
-n_more = 2
-cols <- get_color(rcolors$amwg256, nbrk+n_more) %>% .[-(1:n_more)] %>% rev()
+brks2 <- c(0.05, 0.2, 0.65, 1)
+brks <- c(-Inf, 0.05, 0.2, 0.5, 0.65, 1:5, 20, Inf)
+brks <- c(-Inf, 0.05, 0.2, 0.5, 0.65, Inf)
+
+nbrk <- length(brks) - 1
+n_more <- 2
+cols <- get_color(rcolors$amwg256, nbrk + n_more) %>%
+  .[-(1:n_more)] %>%
+  rev()
 p <- sp_plot(g,
-              brks = brks,
-              cols = cols,
-              xlim = c(-180, 240),
-              ylim = c(-60, 90),
-              aspect = 0.5,
-              sp.layout = sp_layout,
-              key.num2factor = TRUE) +
-    layer_title(x = 0, y = 1, labels = c("AI = P/PET")) +
-    layer_latFreq(bbox = c(185, 240, -60, 90), zlim = c(-2, 2),
-                  col.regions = NULL, 
-                  unit = "native", is_spatial =TRUE) +
-    layer_barchart(x = 0.01, y = 0.05, width = 0.22) +
-    layer_contourf(at = brks2, col = "black")
-    # layer_statistic(x = 0.4, y = 0.1, cex = 1.4)
+  brks = brks,
+  cols = cols,
+  xlim = c(-180, 240),
+  ylim = c(-60, 90),
+  aspect = 0.5,
+  sp.layout = sp_layout,
+  key.num2factor = TRUE
+) +
+  layer_title(x = 0, y = 1, labels = c("AI = P/PET")) +
+  layer_latFreq(
+    bbox = c(185, 240, -60, 90), zlim = c(-2, 2),
+    col.regions = NULL,
+    unit = "native", is_spatial = TRUE
+  ) +
+  layer_barchart(x = 0.01, y = 0.05, width = 0.22) +
+  layer_contourf(at = brks2, col = "black")
+# layer_statistic(x = 0.4, y = 0.1, cex = 1.4)
 write_fig(p, "Figure_S01_AridityIndex_SpatialDistribution2.pdf", 10.7, 5)
 ```
